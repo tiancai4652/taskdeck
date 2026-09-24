@@ -41,7 +41,13 @@ def parse_args(argv):
             key = {"--name": "name", "--goal": "goal", "--group": "group",
                    "--max-minutes": "max_minutes", "--beat-seconds": "beat_seconds",
                    "--cwd": "cwd"}[a]
-            opts[key] = argv[i + 1]
+            val = argv[i + 1]
+            if key in ("max_minutes", "beat_seconds"):
+                try:
+                    val = int(val)
+                except (TypeError, ValueError):
+                    sys.exit("value for %s must be an integer\n%s" % (a, USAGE))
+            opts[key] = val
             i += 2
         else:
             sys.exit("unknown arg: %s\n%s" % (a, USAGE))
